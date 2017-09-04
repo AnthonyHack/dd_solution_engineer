@@ -1,0 +1,17 @@
+---
+
+mysql_root_password: $DAQbvRsSDeX8!#? #MySQL root password
+
+mysql_datadog_user_password: Td802kjBZBVL6OnPIcqUnKYh 
+
+ubuntu_1604_mysql_pkgs:
+  - mysql-*
+
+ubuntu_1604_php_pkgs:
+  - php7.0-cli
+  - libapache2-mod-php 
+  - php-mcrypt 
+  - php-mysql
+
+ubuntu_1604_apache2_pkgs:
+  - apache2
