@@ -5,7 +5,7 @@ provider "aws" {
 }   
    
 resource "aws_instance" "Datadog_Tech_Example" {
-  ami                         = "ami-cd0f5cb6" #Ubuntu 1404 for python2 
+  ami                         = "ami-cd0f5cb6"
   instance_type               = "t2.large"
   associate_public_ip_address = true
   key_name                    = "DD_Testing"

@@ -23,19 +23,38 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
    - [Level 1 - Collect your data](#Level--1--Collect-your-data)
       - [Auto installing the agent with Ansible](#Auto-installing-the-agent-with-Ansible)
-      - [Bonus: What is the agent?](#Bonus:-What-is-the-agent?)
+      - [Bonus: What is the agent?](#Bonus-:-What-is-the-agent?)
       - [Adding tags](#Adding-tags)
       - [Auto install MySQL with Ansible](#Auto-install-MySQL-with-Ansible)
       - [Custom Agent Check](#Custom-Agent-Check)
 
    - [Level 2 - Visualizing your data](#Level--2--Visualizing-your-data)
       - [Clone your database integration dashboard](#Clone-your-database-integration-dashboard)
-      - [Bonus: What is the difference between a timeboard and a screenboard?](#Bonus:-What-is-the-difference-between-a-timeboard-and-a-screenboard?)
+      - [Bonus: What is the difference between a timeboard and a screenboard?](#Bonus-:-What-is-the-difference-between-a-timeboard-and-a-screenboard?)
       - [Grab a snapshot of your test random graph, draw a box when above 0.90 and email](#Grab-a-snapshot-of-your-test-random-graph,-draw-a-box-when-above-0.90-and-email)
 
    - [Level 3 - Alerting on your data](#Level--3--Alerting-on-your-data)
       - [Monitoring your metrics, set an alert for test random for over 0.90](#Monitoring-your-metrics,-set-an-alert-for-test-random-for-over-0.90)
-      - [Bonus: Make it multi-alert by host for scalability](#Bonus:-Make-it-multi-alert-by-host-for-scalability)
+      - [Bonus: Make it multi-alert by host for scalability](#Bonus-:-Make-it-multi-alert-by-host-for-scalability)
       - [Set monitor name and message](#Set-monitor-name-and-message)
       - [Monitor alert Email](#Monitor-alert-Email)
-      - [Bonus: Set scheduled downtime for monitor, make sure Email is notified](#Bonus:-Set-scheduled-downtime-for-monitor,-make-sure-Email-is-notified)
+      - [Bonus: Set scheduled downtime for monitor, make sure Email is notified](#Bonus-:-Set-scheduled-downtime-for-monitor,-make-sure-Email-is-notified)
+
+# Setup an AWS user for Terraform
+
+- [Setting up an AWS user for Terraform](https://aws.amazon.com/) Amazon Web Services(AWS) is the leading cloud compute provider. 
+   They offer a wide range of infrastructure services.
+- Create a user in IAM, there are three steps to follow to create an IAM user to use with Terraform. 
+- One, give the user a name and make sure they have programmatic access only. There's no need for console access with Terraform.
+![Create_AWS_User_Step1](screenshots/Create_AWS_User_Step1.png)
+
+
+
+
+
+
+
+
+- [Install Terraform](https://www.terraform.io/downloads.html) Terraform is much more then just a configuration managment tool. It lets you define your 
+   infrastructure as code. Download it for your appropriate OS.
+
