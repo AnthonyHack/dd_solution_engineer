@@ -16,6 +16,8 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
 - [Prerequisites](#Prerequisites)
    - [Setup an AWS user for Terraform](#Setup-an-AWS-user-for-Terraform)
+   - [Install Terraform](#Install-Terraform)
+   - [Install Ansible](#Install-Ansible)
 
 - [Data Collection](#Data-Collection)
    - [Level 0 - Setup a ubuntu instance](#Level--0--Setup-a-ubuntu-instance)
@@ -23,39 +25,94 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
    - [Level 1 - Collect your data](#Level--1--Collect-your-data)
       - [Auto installing the agent with Ansible](#Auto-installing-the-agent-with-Ansible)
-      - [Bonus: What is the agent?](#Bonus-:-What-is-the-agent?)
+      - [Bonus: What is the agent?](#Bonus--What-is-the-agent?)
       - [Adding tags](#Adding-tags)
       - [Auto install MySQL with Ansible](#Auto-install-MySQL-with-Ansible)
       - [Custom Agent Check](#Custom-Agent-Check)
 
    - [Level 2 - Visualizing your data](#Level--2--Visualizing-your-data)
       - [Clone your database integration dashboard](#Clone-your-database-integration-dashboard)
-      - [Bonus: What is the difference between a timeboard and a screenboard?](#Bonus-:-What-is-the-difference-between-a-timeboard-and-a-screenboard?)
+      - [Bonus: What is the difference between a timeboard and a screenboard?](#Bonus--What-is-the-difference-between-a-timeboard-and-a-screenboard?)
       - [Grab a snapshot of your test random graph, draw a box when above 0.90 and email](#Grab-a-snapshot-of-your-test-random-graph,-draw-a-box-when-above-0.90-and-email)
 
    - [Level 3 - Alerting on your data](#Level--3--Alerting-on-your-data)
       - [Monitoring your metrics, set an alert for test random for over 0.90](#Monitoring-your-metrics,-set-an-alert-for-test-random-for-over-0.90)
-      - [Bonus: Make it multi-alert by host for scalability](#Bonus-:-Make-it-multi-alert-by-host-for-scalability)
+      - [Bonus: Make it multi-alert by host for scalability](#Bonus--Make-it-multi-alert-by-host-for-scalability)
       - [Set monitor name and message](#Set-monitor-name-and-message)
       - [Monitor alert Email](#Monitor-alert-Email)
-      - [Bonus: Set scheduled downtime for monitor, make sure Email is notified](#Bonus-:-Set-scheduled-downtime-for-monitor,-make-sure-Email-is-notified)
+      - [Bonus: Set scheduled downtime for monitor, make sure Email is notified](#Bonus--Set-scheduled-downtime-for-monitor,-make-sure-Email-is-notified)
 
-# Setup an AWS user for Terraform
+# Prerequisites
+
+## Setup an AWS user for Terraform
 
 - [Setting up an AWS user for Terraform](https://aws.amazon.com/) Amazon Web Services(AWS) is the leading cloud compute provider. 
-   They offer a wide range of infrastructure services.
+  They offer a wide range of infrastructure services.
 - Create a user in IAM, there are three steps to follow to create an IAM user to use with Terraform. 
 - One, give the user a name and make sure they have programmatic access only. There's no need for console access with Terraform.
 
 ![Create_AWS_User_Step1](screenshots/Create_AWS_User_Step1.png)
 
+- Two, in order to have Terraform create our EC2 instance we'll need the proper AWS permissions. For this user they will need only 
+  AmazonEC2FullAccess in order to create and destroy EC2 instances.
 
+![Create_AWS_User_Step2_Permissions](screenshots/Create_AWS_User_Step2_Permissions.png)
 
+- Finally, You will need both the access and secret keys for the user. These will be used at runtime so as to not save them in a file and cause a security risk.
 
+![Create_AWS_User_Step3_Keys](screenshots/Create_AWS_User_Step3_Keys.png)
 
+## Install Terraform
 
+- [Installing Terraform](https://www.terraform.io/downloads.html) Terraform is much more then just a configuration managment tool. It lets you define your 
+  infrastructure as code. Download it for your appropriate OS.
 
+- Download the correct version of Terraform for your OS, I have downloaded the terraform_0.10.3_darwin_amd64.zip for MacOSX. Unzipping inflates the file and then move that file 
+  to somewhere that is in your PATH. I have moved the file to /usr/local/bin which lets me access the terraform command directly.
 
-- [Install Terraform](https://www.terraform.io/downloads.html) Terraform is much more then just a configuration managment tool. It lets you define your 
-   infrastructure as code. Download it for your appropriate OS.
+## Install Ansible
+
+- [Installing Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html) Ansible is an open source configuration management tool. Powerful but yet extremely simple to use.
+  Ansible can handle not only configuration mangagement but applicaion deployments, and task automation. Installation instructions are dependent on OS used.
+
+- Since I am installing on MacOSX I will be using pip which is python's package manager. You can install pip by downloading [Pip download](https://bootstrap.pypa.io/get-pip.py) this file 
+  and running python get-pip.py. 
+
+- Now that you have pip you can install ansible by simply running **sudo pip install ansible** this will install ansible and a series of other applications. We'll mainly concentrate on 
+  ansible-playbook.
+
+# Data Collection
+
+## Level 0 Setup an Ubuntu Instance
+
+- We will auto build our EC2 instance that will run our database, as well as our datadog agent. This will be a t2.large EC2 instance in AWS. We will build this with Terraform
+
+- The code below will build our instance for us.
+
+```terraform
+provider "aws" {
+  access_key    = "${var.access_key}"
+  secret_key    = "${var.secret_key}"
+  region        = "${var.region}"
+}   
+   
+resource "aws_instance" "Datadog_Tech_Example" {
+  ami                         = "ami-cd0f5cb6"
+  instance_type               = "t2.large"
+  associate_public_ip_address = true
+  key_name                    = "DD_Testing"
+  vpc_security_group_ids = [
+      "sg-033ebf73"
+  ]
+
+  tags {
+    Name = "Datadog_Tech_Example"
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False AWS_ACCESS_KEY=${var.access_key} AWS_SECRET_KEY=${var.secret_key} ansible-playbook /Users/hack/dd_solution_engineer/ansible/Tasks/main.yml -u ubuntu --private-key /Users/hack/.ssh/DD_Testing.pem -i '${aws_instance.Datadog_Tech_Example.public_ip},'"
+  }
+}
+```
+
 
