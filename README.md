@@ -46,7 +46,7 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
 ## Setup an AWS user for Terraform
 
-- [Setting up an AWS user for Terraform](https://aws.amazon.com/) Amazon Web Services(AWS) is the leading cloud compute provider. 
+- Setting up an AWS user for Terraform [Amazon Web Services(AWS)](https://aws.amazon.com/) is the leading cloud compute provider. 
   They offer a wide range of infrastructure services.
 - Create a user in IAM, there are three steps to follow to create an IAM user to use with Terraform. 
 - One, give the user a name and make sure they have programmatic access only. There's no need for console access with Terraform.
@@ -54,7 +54,7 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 ![Create_AWS_User_Step1](screenshots/Create_AWS_User_Step1.png)
 
 - Two, in order to have Terraform create our EC2 instance we'll need the proper AWS permissions. For this user they will need only 
-  AmazonEC2FullAccess in order to create and destroy EC2 instances.
+  **AmazonEC2FullAccess** in order to create and destroy EC2 instances.
 
 ![Create_AWS_User_Step2_Permissions](screenshots/Create_AWS_User_Step2_Permissions.png)
 
@@ -67,15 +67,15 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 - [Installing Terraform](https://www.terraform.io/downloads.html) Terraform is much more then just a configuration managment tool. It lets you define your 
   infrastructure as code. Download it for your appropriate OS.
 
-- Download the correct version of Terraform for your OS, I have downloaded the terraform_0.10.3_darwin_amd64.zip for MacOSX. Unzipping inflates the file and then move that file 
-  to somewhere that is in your PATH. I have moved the file to /usr/local/bin which lets me access the terraform command directly.
+- Download the correct version of Terraform for your OS, I have downloaded **terraform_0.10.3_darwin_amd64.zip** for MacOSX. Unzipping inflates the file you then move that file 
+  to somewhere that is in your PATH. I have moved the file to **/usr/local/bin** which lets me access the terraform command directly.
 
 ## Install Ansible
 
 - [Installing Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html) Ansible is an open source configuration management tool. Powerful but yet extremely simple to use.
   Ansible can handle not only configuration mangagement but applicaion deployments, and task automation. Installation instructions are dependent on OS used.
 
-- Since I am installing on MacOSX I will be using pip which is python's package manager. You can install pip by downloading [Pip download](https://bootstrap.pypa.io/get-pip.py) this file 
+- Since I am installing on MacOSX I will be using pip which is python's package manager. You can install pip by downloading this file [Pip](https://bootstrap.pypa.io/get-pip.py) 
   and running python get-pip.py. 
 
 - Now that you have pip you can install ansible by simply running **sudo pip install ansible** this will install ansible and a series of other applications. We'll mainly concentrate on 
@@ -93,7 +93,6 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 provider "aws" {
   access_key    = "${var.access_key}"
   secret_key    = "${var.secret_key}"
-  region        = "${var.region}"
 }   
    
 resource "aws_instance" "Datadog_Tech_Example" {
@@ -114,5 +113,13 @@ resource "aws_instance" "Datadog_Tech_Example" {
   }
 }
 ```
+
+- A short overview of the code above, we set the provider to be AWS (terraform can also be used with other cloud providers such as google). For the access and secret keys we will use the ones we
+  generated earlier for the user. These will be input during run-time. We are going to build an aws_instance resource called **Datadog_Tech_Example**, we are using the Ubuntu 16.04 AMI,
+  its size will be t2.large, we will give it a public IP address, and access it using a previously created ssh key. The newly created instance will be associated with a previously created
+  security group that grants SSH access as well as access for the datadog agent to communicate on port 8125. Finally we tag it with a Name so we can see it in the AWS Console. We will go over the
+  provisioner portion in the next step when we install both a MySQL database as well as the datadog agent itself.
+
+## Level 1 Collect your data
 
 
