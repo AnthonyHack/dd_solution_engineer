@@ -18,6 +18,6 @@ resource "aws_instance" "Datadog_Tech_Example" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False AWS_ACCESS_KEY=${var.access_key} AWS_SECRET_KEY=${var.secret_key} ansible-playbook /Users/hack/DataDog_Solutions_Engineer/ansible/Tasks/main.yml -u ubuntu --private-key /Users/hack/.ssh/DD_Testing.pem -i '${aws_instance.Datadog_Tech_Example.public_ip},'"
+    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False AWS_ACCESS_KEY=${var.access_key} AWS_SECRET_KEY=${var.secret_key} ansible-playbook /Users/hack/dd_solution_engineer/ansible/Tasks/main.yml -u ubuntu --private-key /Users/hack/.ssh/DD_Testing.pem -i '${aws_instance.Datadog_Tech_Example.public_ip},'"
   }
 }
