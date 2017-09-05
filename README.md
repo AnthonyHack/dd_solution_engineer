@@ -23,7 +23,7 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
    - [Level 1 - Collect your data](#Level--1--Collect-your-data)
       - [Auto installing the agent with Ansible](#Auto-installing-the-agent-with-Ansible)
-      - [Bonus: What is the agent?](#Bonus--:--What-is-the-agent?)
+      - [Bonus: What is the agent?](#Bonus-:-What-is-the-agent?)
       - [Adding tags](#Adding-tags)
       - [Auto install MySQL with Ansible](#Auto-install-MySQL-with-Ansible)
       - [Custom Agent Check](#Custom-Agent-Check)
