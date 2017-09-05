@@ -4,7 +4,7 @@ Datadog is a full service cloud-scale monitoring solution that gathers metrics a
 as well as your applications. From containers, to cloud providers, to bare metal machines, from container management, to databases, to web servers,
 Datadog is able to handle most modern infrastructure solutions.
 
-Datadog provides a wide array of integrations that can handle most modern infrastructure needs. These integrations allow you to gather metrics 
+Datadog provides a wide array of integrations that can handle common infrastructure needs. These integrations allow you to gather metrics 
 quickly and in one central location. All metrics and statistics datadog gathers can be displayed in a single pane of glass which can be on a single
 screen in a NOC or other operations center. These metrics can be turned into graphs and dashboards which can then be drilled down into further for 
 a more detailed look at your infrastructure. Alerts can also be created to warn your teams that something is wrong before it becomes a larger problem.
@@ -14,6 +14,28 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
 ## Contents
 
-- [Setup an AWS instance with Terraform](#Setup-an-AWS-instance-with-Terraform)
+- [Prerequisites](#Prerequisites)
+   - [Setup an AWS user for Terraform](#Setup-an-AWS-user-for-Terraform)
+
 - [Data Collection](#Data-Collection)
-   - [Automatic installation with Ansible](#Automatic-installation-with-Ansible)
+   - [Level 0 - Setup a ubuntu instance](#Level 0 - Setup a ubuntu instance)
+      - [Auto build EC2 instance with Terraform](#Auto build EC2 instance with Terraform)
+
+   - [Level 1 - Collect your data](#Level 1 - Collect your data)
+      - [Auto installing the agent with Ansible](#Auto installing the agent with Ansible)
+      - [Bonus: What is the agent?](#Bonus: What is the agent?)
+      - [Adding tags](#Adding tags)
+      - [Auto install MySQL with Ansible](#Auto install MySQL with Ansible)
+      - [Custom Agent Check](#Custom Agent Check)
+
+   - [Level 2 - Visualizing your data](#Level 2 - Visualizing your data)
+      - [Clone your database integration dashboard](#Clone your database integration dashboard)
+      - [Bonus: What is the difference between a timeboard and a screenboard?](#Bonus: What is the difference between a timeboard and a screenboard?)
+      - [Grab a snapshot of your test random graph, draw a box when above 0.90 and email](#Grab a snapshot of your test random graph, draw a box when above 0.90 and email)
+
+   - [Level 3 - Alerting on your data](#Level 3 - Alerting on your data)
+      - [Monitoring your metrics, set an alert for test random for over 0.90](#Monitoring your metrics, set an alert for test random for over 0.90)
+      - [Bonus: Make it multi-alert by host for scalability](#Bonus: Make it multi-alert by host for scalability)
+      - [Set monitor name and message](#Set monitor name and message)
+      - [Monitor alert Email](#Monitor alert Email)
+      - [Bonus: Set scheduled downtime for monitor, make sure Email is notified](#Bonus: Set scheduled downtime for monitor, make sure Email is notified)
