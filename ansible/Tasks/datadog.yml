@@ -13,7 +13,7 @@
         dest: /etc/dd-agent/datadog.conf
         mode: 0640
 
-    - name: Copy the data dog mysql cond.d yaml file
+    - name: Copy the data dog mysql conf.d yaml file
       template:
         src: ../Templates/mysql.yaml.j2
         dest: /etc/dd-agent/conf.d/mysql.yaml
