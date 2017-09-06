@@ -83,104 +83,104 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
 # Data Collection
 
- ## Level 0 Setup an Ubuntu Instance
+## Level 0 Setup an Ubuntu Instance
 
-  ## Auto build EC2 instance with Terraform
+## Auto build EC2 instance with Terraform
 
-	- We will auto build our EC2 instance that will run our database, as well as our datadog agent. This will be a t2.large EC2 instance in AWS. We will build this with Terraform
-	
-	- The code below will build our instance for us.
-	
-	```terraform
-	provider "aws" {
-	  access_key    = "${var.access_key}"
-	  secret_key    = "${var.secret_key}"
-	}   
-	   
-	resource "aws_instance" "Datadog_Tech_Example" {
-	  ami                         = "ami-cd0f5cb6"
-	  instance_type               = "t2.large"
-	  associate_public_ip_address = true
-	  key_name                    = "DD_Testing"
-	  vpc_security_group_ids = [
-	      "sg-033ebf73"
-	  ]
-	
-	  tags {
-	    Name = "Datadog_Tech_Example"
-	  }
-	
-	  provisioner "local-exec" {
-	    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False AWS_ACCESS_KEY=${var.access_key} AWS_SECRET_KEY=${var.secret_key} ansible-playbook /Users/hack/dd_solution_engineer/ansible/Tasks/main.yml -u 	ubuntu --private-key /Users/hack/.ssh/DD_Testing.pem -i '${aws_instance.Datadog_Tech_Example.public_ip},'"
-	  }
-	}
-	```
-	
-	- A short overview of the code above, we set the provider to be AWS (terraform can also be used with other cloud providers such as google). For the access and secret keys we will use the ones we
-	  generated earlier for the user. These will be input during run-time. We are going to build an aws_instance resource called **Datadog_Tech_Example**, we are using the Ubuntu 16.04 AMI,
-	  its size will be t2.large, we will give it a public IP address, and access it using a previously created ssh key. The newly created instance will be associated with a previously created
-	  security group that grants SSH access as well as access for the datadog agent to communicate on port 8125. Finally we tag it with a Name so we can see it in the AWS Console. We will go over the
-	  provisioner portion in the next step when we install both a MySQL database as well as the datadog agent itself.
+- We will auto build our EC2 instance that will run our database, as well as our datadog agent. This will be a t2.large EC2 instance in AWS. We will build this with Terraform
 
- ## Level 1 Collect your data
+- The code below will build our instance for us.
 
-  ## Auto installing the agent with Ansible
+```terraform
+provider "aws" {
+  access_key    = "${var.access_key}"
+  secret_key    = "${var.secret_key}"
+}   
+   
+resource "aws_instance" "Datadog_Tech_Example" {
+  ami                         = "ami-cd0f5cb6"
+  instance_type               = "t2.large"
+  associate_public_ip_address = true
+  key_name                    = "DD_Testing"
+  vpc_security_group_ids = [
+      "sg-033ebf73"
+  ]
 
-    - We will use Ansible to install the agent on our host automatically. This will tie in with Terraform, we will create an ansible playbook that will be run by Terraform when our EC2 instance
-      is created.
+  tags {
+    Name = "Datadog_Tech_Example"
+  }
 
-    ```yaml
-    ---
-	- hosts: all
-	  become: true
-	  gather_facts: False
-	  tasks:
-	
-	    - name: Run dd-agent install script
-	      raw: DD_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
-	
-	    - name: Copy the data dog conf file
-	      template:
-	        src: ../Templates/datadog.conf.j2
-	        dest: /etc/dd-agent/datadog.conf
-	        mode: 0640
-	
-	    - name: Copy the data dog mysql conf.d yaml file
-	      template:
-	        src: ../Templates/mysql.yaml.j2
-	        dest: /etc/dd-agent/conf.d/mysql.yaml
-	        mode: 0644
-	
-	    - name: Copy the sample random conf.d yaml file
-	      template:
-	        src: ../Templates/sample_random.yaml.j2
-	        dest: /etc/dd-agent/conf.d/sample_random.yaml
-	        mode: 0644
-	
-	    - name: Copy the sample random python script
-	      template:
-	        src: ../Templates/sample_random.py.j2
-	        dest: /etc/dd-agent/checks.d/sample_random.py
-	        mode: 0644
-	
-	    - name: Stop datadog agent
-	      command: /etc/init.d/datadog-agent stop
-	
-	    - name: Start datadog agent
-	      command: /etc/init.d/datadog-agent start
-	```
+  provisioner "local-exec" {
+    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False AWS_ACCESS_KEY=${var.access_key} AWS_SECRET_KEY=${var.secret_key} ansible-playbook /Users/hack/dd_solution_engineer/ansible/Tasks/main.yml -u 	ubuntu --private-key /Users/hack/.ssh/DD_Testing.pem -i '${aws_instance.Datadog_Tech_Example.public_ip},'"
+  }
+}
+```
 
-	- Reviewing this playbook, we use **hosts: all** as we wont know the EC2 hostname until creation, become sudo to run as root, we do not need to gather facts at this time.
-	  We then run the datadog installation one-liner (with API-KEY X'd out here). We have a copy of a datadog conf file setup already from an install by hand, we 
-	  copy this over with the correct permissions. We do the same thing with our database yaml file (in this case MySQL) our sample random yaml as well as our 
-	  actual sample random script. These are placed in their respective directories (conf.d for our yamls, checks.d for our agent check). We then restart our agent for these 
-	  additions to take effect.
+- A short overview of the code above, we set the provider to be AWS (terraform can also be used with other cloud providers such as google). For the access and secret keys we will use the ones we
+  generated earlier for the user. These will be input during run-time. We are going to build an aws_instance resource called **Datadog_Tech_Example**, we are using the Ubuntu 16.04 AMI,
+  its size will be t2.large, we will give it a public IP address, and access it using a previously created ssh key. The newly created instance will be associated with a previously created
+  security group that grants SSH access as well as access for the datadog agent to communicate on port 8125. Finally we tag it with a Name so we can see it in the AWS Console. We will go over the
+  provisioner portion in the next step when we install both a MySQL database as well as the datadog agent itself.
 
-  ## Bonus: What is the agent?
+## Level 1 Collect your data
 
-  	  > The datadog agent is a collector, it collects data, events and metrics about your infrastructure and applications. It does this via pre-written checks and integrations that can be 
-  	    used to monitor the majority of major platforms including cloud providers, databases, caching solutions, and web servers. The agent collects these metrics and events, and sends them 
-  	    to datadog to be presented to you in a manner that will let you address pressing infrastructure issues whether they are immediate or something that will be taken care of in the future.
+## Auto installing the agent with Ansible
 
-  ## Adding tags
+- We will use Ansible to install the agent on our host automatically. This will tie in with Terraform, we will create an ansible playbook that will be run by Terraform when our EC2 instance
+  is created
+
+```yaml
+---
+- hosts: all
+  become: true
+  gather_facts: False
+  tasks:
+
+    - name: Run dd-agent install script
+      raw: DD_API_KEY=7249fdd3b7b23b02d5c8f09aafc8981c bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+
+    - name: Copy the data dog conf file
+      template:
+        src: ../Templates/datadog.conf.j2
+        dest: /etc/dd-agent/datadog.conf
+        mode: 0640
+
+    - name: Copy the data dog mysql conf.d yaml file
+      template:
+        src: ../Templates/mysql.yaml.j2
+        dest: /etc/dd-agent/conf.d/mysql.yaml
+        mode: 0644
+
+    - name: Copy the sample random conf.d yaml file
+      template:
+        src: ../Templates/sample_random.yaml.j2
+        dest: /etc/dd-agent/conf.d/sample_random.yaml
+        mode: 0644
+
+    - name: Copy the sample random python script
+      template:
+        src: ../Templates/sample_random.py.j2
+        dest: /etc/dd-agent/checks.d/sample_random.py
+        mode: 0644
+
+    - name: Stop datadog agent
+      command: /etc/init.d/datadog-agent stop
+
+    - name: Start datadog agent
+      command: /etc/init.d/datadog-agent start
+```
+
+- Reviewing this playbook, we use **hosts: all** as we wont know the EC2 hostname until creation, become sudo to run as root, we do not need to gather facts at this time.
+  We then run the datadog installation one-liner (with API-KEY X'd out here). We have a copy of a datadog conf file setup already from an install by hand, we 
+  copy this over with the correct permissions. We do the same thing with our database yaml file (in this case MySQL) our sample random yaml as well as our 
+  actual sample random script. These are placed in their respective directories (conf.d for our yamls, checks.d for our agent check). We then restart our agent for these 
+  additions to take effect.
+
+## Bonus: What is the agent?
+
+> The datadog agent is a collector, it collects data, events and metrics about your infrastructure and applications. It does this via pre-written checks and integrations that can be 
+  used to monitor the majority of major platforms including cloud providers, databases, caching solutions, and web servers. The agent collects these metrics and events, and sends them 
+  to datadog to be presented to you in a manner that will let you address pressing infrastructure issues whether they are immediate or something that will be taken care of in the future.
+
+## Adding tags
 
