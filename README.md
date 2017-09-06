@@ -137,7 +137,7 @@ resource "aws_instance" "Datadog_Tech_Example" {
   tasks:
 
     - name: Run dd-agent install script
-      raw: DD_API_KEY=7249fdd3b7b23b02d5c8f09aafc8981c bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+      raw: DD_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
 
     - name: Copy the data dog conf file
       template:
