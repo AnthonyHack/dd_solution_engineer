@@ -85,7 +85,7 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
  ## Level 0 Setup an Ubuntu Instance
 
-  ### Auto build EC2 instance with Terraform
+  ## Auto build EC2 instance with Terraform
 
 	- We will auto build our EC2 instance that will run our database, as well as our datadog agent. This will be a t2.large EC2 instance in AWS. We will build this with Terraform
 	
@@ -124,7 +124,7 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 
  ## Level 1 Collect your data
 
-  ### Auto installing the agent with Ansible
+  ## Auto installing the agent with Ansible
 
     - We will use Ansible to install the agent on our host automatically. This will tie in with Terraform, we will create an ansible playbook that will be run by Terraform when our EC2 instance
       is created.
@@ -176,11 +176,11 @@ You can test datadog out yourself here [https://www.datadoghq.com/](https://www.
 	  actual sample random script. These are placed in their respective directories (conf.d for our yamls, checks.d for our agent check). We then restart our agent for these 
 	  additions to take effect.
 
-  ### Bonus: What is the agent?
+  ## Bonus: What is the agent?
 
-  	- > The datadog agent is a collector, it collects data, events and metrics about your infrastructure and applications. It does this via pre-written checks and integrations that can be 
+  	  > The datadog agent is a collector, it collects data, events and metrics about your infrastructure and applications. It does this via pre-written checks and integrations that can be 
   	    used to monitor the majority of major platforms including cloud providers, databases, caching solutions, and web servers. The agent collects these metrics and events, and sends them 
   	    to datadog to be presented to you in a manner that will let you address pressing infrastructure issues whether they are immediate or something that will be taken care of in the future.
 
-  ### Adding tags
+  ## Adding tags
 
