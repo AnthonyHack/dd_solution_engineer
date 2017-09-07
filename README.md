@@ -187,11 +187,11 @@ resource "aws_instance" "Datadog_Tech_Example" {
 
 - Adding tags is a great way to identify and filter your infrastructure in datadog. Its as easy as updating the datadog.conf file, in the main section under host tags. Here is an example.
 
-  ![tags_set_in_conf](screenshots/tags_set_in_conf.png)
+  ![Tag_Set_In_DDConf](screenshots/Tag_Set_In_DDConf.png)
 
   We can set individual tags as well as by environment or role or however you designate your infrastructure. Here we set a random tag **hacktag**, then an env tag and we put this host in
-  the dev environment. We give this host two roles one as a database host and one as a web host, since this is only one host this is ok but in a normal environment you would usually
-  designate one host to be your database host and one to be your webserver. You could then use ansible to check against tags to populate your host with the correct datadog conf file.
+  the dev environment. We give this host the role of a web server, but we can make this what we want it
+  to be if we have multiple database servers we can give it a role of database.
 
   Because we have installed this via Ansible and the agent has been restarted these tags are available from the start. You can see them if you click infrastructure -> infrastructure list 
   and then click your host. You can see an example below.
